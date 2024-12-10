@@ -4,29 +4,34 @@
  */
 package cliente;
 
-
 import cliente.EditarCliente;
 import cliente.ControladorListClientes;
 import cliente.ControladorClientes;
 import cliente.AgregarCliente;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mycompany.tienda_tecnologia.Dashboard;
 import java.awt.BorderLayout;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 /**
  *
  * @author Josue
  */
 public class VistaCliente extends javax.swing.JPanel {
+
     MediaType JSON = MediaType.get("application/json");
     ControladorClientes consulta = null;
+
     /**
      * Creates new form VistaCliente
      */
@@ -34,21 +39,14 @@ public class VistaCliente extends javax.swing.JPanel {
         initComponents();
         mostrarTodo(consultaTodo());
     }
-    
-    
-    
-    
-    
-         
-    
-    
+
     public List<ControladorListClientes> consultaTodo() {
         OkHttpClient client = new OkHttpClient();
         String enlace = "http://localhost:3000/clientes";
 
         Request peticion = new Request.Builder().url(enlace).build();
 
-        try ( Response respuesta = client.newCall(peticion).execute()) {
+        try (Response respuesta = client.newCall(peticion).execute()) {
             if (respuesta.isSuccessful() && respuesta.body() != null) {
                 String respuestaJSON = respuesta.body().string();
 
@@ -64,22 +62,30 @@ public class VistaCliente extends javax.swing.JPanel {
     }
 
     public void mostrarTodo(List<ControladorListClientes> clientes) {
-        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"ID_CLIENTE", "NOMBRE", "APELLIDO","EMAIL", "TELEFONO"}, 1);
+        // Crear un modelo de tabla con el id_cliente como columna adicional (oculta)
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"ID_CLIENTE", "NOMBRE", "APELLIDO", "EMAIL", "TELEFONO"}, 0);
+
+        // Llenar el modelo con los datos
         for (ControladorListClientes item : clientes) {
-            modeloTabla.addRow(new Object[]{item.getId_cliente(), item.getNombre(), item.getApellido(),item.getEmail(), item.getTelefono()});
+            modeloTabla.addRow(new Object[]{item.getId_cliente(), item.getNombre(), item.getApellido(), item.getEmail(), item.getTelefono()});
         }
 
+        // Asignar el modelo a la tabla
         jTable1.setModel(modeloTabla);
 
+        // Ocultar la columna del ID (ID_CLIENTE)
+        jTable1.getColumnModel().getColumn(0).setMinWidth(0);
+        jTable1.getColumnModel().getColumn(0).setMaxWidth(0);
+        jTable1.getColumnModel().getColumn(0).setWidth(0);
     }
-    
+
     public void eliminarCliente(String id) {
         OkHttpClient client = new OkHttpClient();
         Gson gson = new Gson();
-        String enlace = "http://localhost:3000/clientes/"+id;
+        String enlace = "http://localhost:3000/clientes/" + id;
 
         Request peticion = new Request.Builder().url(enlace).delete().build();
-        try ( Response respuesta = client.newCall(peticion).execute()) {
+        try (Response respuesta = client.newCall(peticion).execute()) {
             if (respuesta.isSuccessful()) {
                 mostrarTodo(consultaTodo());
             } else {
@@ -91,6 +97,7 @@ public class VistaCliente extends javax.swing.JPanel {
             System.out.println(ex.getMessage());
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -138,7 +145,7 @@ public class VistaCliente extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Times New Roman", 2, 24)); // NOI18N
         jLabel1.setText("Cliente");
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 153));
+        jButton2.setBackground(new java.awt.Color(153, 204, 255));
         jButton2.setText("Editar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -211,27 +218,58 @@ public class VistaCliente extends javax.swing.JPanel {
     }//GEN-LAST:event_formComponentShown
 
     private void BotonAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAgregarClienteActionPerformed
-        AgregarCliente ac1 = new AgregarCliente();
-        
+        Dashboard dashboard = (Dashboard) SwingUtilities.getWindowAncestor(this); // Suponiendo que 'this' es el componente dentro del JPanel
+        dashboard.setEnabled(false);
+        AgregarCliente ac1 = new AgregarCliente(dashboard);
         ac1.setVisible(true);
-        
-        
-        
-        
+
+
     }//GEN-LAST:event_BotonAgregarClienteActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int index = jTable1.getSelectedRow();
-        String codigo = jTable1.getValueAt(index, 0).toString();
-        eliminarCliente(codigo);
+
+        int index = jTable1.getSelectedRow(); // Obtiene el índice de la fila seleccionada
+        if (index == -1) {
+            // Si no se seleccionó ninguna fila, muestra un mensaje de advertencia
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila de la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        } else {
+            // Obtén el ID del cliente desde la columna oculta
+            String codigo = jTable1.getValueAt(index, 0).toString();
+            String nombre = jTable1.getValueAt(index, 1).toString();
+
+            // Muestra un cuadro de diálogo de confirmación
+            int respuesta = JOptionPane.showConfirmDialog(
+                    null,
+                    "¿Está seguro de que desea eliminar al cliente: " + nombre + "?",
+                    "Confirmar eliminación",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            // Si el usuario confirma la eliminación
+            if (respuesta == JOptionPane.YES_OPTION) {
+                eliminarCliente(codigo); // Llama al método para eliminar el cliente
+                JOptionPane.showMessageDialog(null, "Registro eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       EditarCliente ed1 = new EditarCliente();
-       int index = jTable1.getSelectedRow();
-       String codigo = jTable1.getValueAt(index, 0).toString();
-       ed1.setID(codigo);
-       ed1.setVisible(true);
+        
+        int index = jTable1.getSelectedRow();
+        if (index == -1) {
+            // No se seleccionó ninguna fila
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila de la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        } else {
+            Dashboard dashboard = (Dashboard) SwingUtilities.getWindowAncestor(this);
+            EditarCliente ed1 = new EditarCliente(dashboard);
+            String codigo = jTable1.getValueAt(index, 0).toString();
+            dashboard.setEnabled(false);
+            ed1.setID(codigo);
+            ed1.setVisible(true);
+        }
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
