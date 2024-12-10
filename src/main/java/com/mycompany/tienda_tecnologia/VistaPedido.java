@@ -52,9 +52,9 @@ public class VistaPedido extends javax.swing.JPanel {
     }
 
     public void mostrarTodo(List<ControladorListPedidos> pedidos) {
-        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"IDPEDIDO", "NOMBRECLIENTE", "FECHA","ESTADO", "NOMBREPRODUCTO","CANTIDAD"}, 1);
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"IDPEDIDO", "NOMBRECLIENTE","ESTADO", "NOMBREPRODUCTO","CANTIDAD"}, 1);
         for (ControladorListPedidos item : pedidos) {
-            modeloTabla.addRow(new Object[]{item.getIdPedido(), item.getNombreCliente(), item.getFecha(),item.getEstado(), item.getNombreProducto(), item.getCantidad()});
+            modeloTabla.addRow(new Object[]{item.getIdPedido(), item.getNombreCliente(),item.getEstado(), item.getNombreProducto(), item.getCantidad()});
         }
 
         jTable1.setModel(modeloTabla);
@@ -96,7 +96,7 @@ public class VistaPedido extends javax.swing.JPanel {
         jButton1.setBackground(new java.awt.Color(153, 255, 153));
         jButton1.setText("Agregar");
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 153));
+        jButton2.setBackground(new java.awt.Color(153, 204, 255));
         jButton2.setText("Editar");
 
         jButton3.setBackground(new java.awt.Color(255, 102, 102));
