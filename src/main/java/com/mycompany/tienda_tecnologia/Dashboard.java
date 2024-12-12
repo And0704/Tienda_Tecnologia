@@ -4,6 +4,7 @@
  */
 package com.mycompany.tienda_tecnologia;
 
+import pedido.VistaPedido;
 import producto.VistaProducto;
 import cliente.VistaCliente;
 import java.awt.BorderLayout;
@@ -22,6 +23,8 @@ public class Dashboard extends javax.swing.JFrame {
      */
     public Dashboard() {
         initComponents();
+        VistaCliente p1 = new VistaCliente();
+        ShowPanel(p1);
     }
 
     
@@ -133,7 +136,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(BotonProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(BotonPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout contenidoLayout = new javax.swing.GroupLayout(contenido);
@@ -194,8 +197,10 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_BotonProductosActionPerformed
 
     private void BotonClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonClienteActionPerformed
-       VistaCliente p1 = new VistaCliente();
-       ShowPanel(p1);
+       
+        VistaCliente p1 = new VistaCliente();
+        ShowPanel(p1);
+       
     }//GEN-LAST:event_BotonClienteActionPerformed
 
     private void BotonPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonPedidosActionPerformed
