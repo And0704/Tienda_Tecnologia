@@ -80,6 +80,7 @@ public class EditarProducto extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setText("Editar informacion del producto");
@@ -101,6 +102,11 @@ public class EditarProducto extends javax.swing.JFrame {
                 IngresoPrecioActionPerformed(evt);
             }
         });
+        IngresoPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                IngresoPrecioKeyTyped(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 2, 14)); // NOI18N
         jLabel4.setText("Descripción");
@@ -117,6 +123,11 @@ public class EditarProducto extends javax.swing.JFrame {
         IngresoStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 IngresoStockActionPerformed(evt);
+            }
+        });
+        IngresoStock.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                IngresoStockKeyTyped(evt);
             }
         });
 
@@ -287,12 +298,26 @@ public class EditarProducto extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void IngresoPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IngresoPrecioKeyTyped
+        char c = evt.getKeyChar();
+        if ((c < '0' || c > '9') && c != '.') {
+            evt.consume(); // Bloquea cualquier carácter que no sea dígito o punto
+        }
+    }//GEN-LAST:event_IngresoPrecioKeyTyped
+
+    private void IngresoStockKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IngresoStockKeyTyped
+        char c = evt.getKeyChar();
+        if (c < '0' || c > '9') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_IngresoStockKeyTyped
+
     /**
      * @param args the command line arguments
      */
     public ControladorListProductos consultaUNO(String id) {
         OkHttpClient client = new OkHttpClient();
-        String enlace = "http://localhost:3000/producto/" + id;
+        String enlace = "http://192.168.137.1:3000/producto/" + id;
 
         Request peticion = new Request.Builder().url(enlace).build();
 
@@ -316,7 +341,7 @@ public class EditarProducto extends javax.swing.JFrame {
     public void insertarProducto(ControladorProductos nuevoProducto) {
         OkHttpClient client = new OkHttpClient();
         Gson gson = new Gson();
-        String enlace = "http://localhost:3000/producto";
+        String enlace = "http://192.168.137.1:3000/producto";
 
         String datosJSON = gson.toJson(nuevoProducto);
 
@@ -346,7 +371,7 @@ public class EditarProducto extends javax.swing.JFrame {
 
     public List<ControladorListProductos> consultaTodo() {
         OkHttpClient client = new OkHttpClient();
-        String enlace = "http://localhost:3000/producto";
+        String enlace = "http://192.168.137.1:3000/producto";
 
         Request peticion = new Request.Builder().url(enlace).build();
 
@@ -368,7 +393,7 @@ public class EditarProducto extends javax.swing.JFrame {
     public void editarProducto(ControladorProductos nuevoProducto) {
         OkHttpClient client = new OkHttpClient();
         Gson gson = new Gson();
-        String enlace = "http://localhost:3000/producto/" + nuevoProducto.getId_producto();
+        String enlace = "http://192.168.137.1:3000/producto/" + nuevoProducto.getId_producto();
         System.out.println(enlace);
         String datosJSON = gson.toJson(nuevoProducto);
 
