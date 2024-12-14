@@ -74,6 +74,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Crud Tienda Tegnologica");
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(102, 204, 255));
 

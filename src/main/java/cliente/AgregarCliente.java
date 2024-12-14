@@ -6,7 +6,9 @@ package cliente;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mycompany.tienda_tecnologia.Dashboard;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -19,13 +21,17 @@ import okhttp3.Response;
  * @author Josue
  */
 public class AgregarCliente extends javax.swing.JFrame {
+
     MediaType JSON = MediaType.get("application/json");
-    
+    private Dashboard dashboard;
+    private int id_producto;
+
     /**
      * Creates new form AgregarCliente1
      */
-    public AgregarCliente() {
+    public AgregarCliente(Dashboard dashboard) {
         initComponents();
+        this.dashboard = dashboard;
     }
 
     /**
@@ -53,6 +59,7 @@ public class AgregarCliente extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setText("Registrar nuevo cliente");
@@ -65,6 +72,11 @@ public class AgregarCliente extends javax.swing.JFrame {
                 IngresoNombreActionPerformed(evt);
             }
         });
+        IngresoNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                IngresoNombreKeyTyped(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 2, 14)); // NOI18N
         jLabel3.setText("Apellido");
@@ -74,6 +86,11 @@ public class AgregarCliente extends javax.swing.JFrame {
                 IngresoApellidoActionPerformed(evt);
             }
         });
+        IngresoApellido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                IngresoApellidoKeyTyped(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 2, 14)); // NOI18N
         jLabel4.setText("Telefono");
@@ -81,6 +98,11 @@ public class AgregarCliente extends javax.swing.JFrame {
         IngresoTelefono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 IngresoTelefonoActionPerformed(evt);
+            }
+        });
+        IngresoTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                IngresoTelefonoKeyTyped(evt);
             }
         });
 
@@ -163,26 +185,25 @@ public class AgregarCliente extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(IngresoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(IngresoApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(IngresoTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(28, 28, 28)
+                                .addGap(46, 46, 46)
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(IngresoEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(IngresoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(IngresoApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(149, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -228,42 +249,80 @@ public class AgregarCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_IngresoTelefonoActionPerformed
 
     private void IngresoEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IngresoEmailActionPerformed
-        // TODO add your handling code here:
+        // Este es un comentario de prueba 
     }//GEN-LAST:event_IngresoEmailActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dashboard.setEnabled(true);
         this.dispose();
-        
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        ControladorClientes nuevoCliente = new ControladorClientes();
-        nuevoCliente.setNombre(IngresoNombre.getText());
-        nuevoCliente.setApellido(IngresoApellido.getText());
-        nuevoCliente.setEmail(IngresoEmail.getText());
-        nuevoCliente.setTelefono(IngresoTelefono.getText());
-        
+        if (IngresoNombre.getText().isEmpty() || IngresoApellido.getText().isEmpty()
+                || IngresoEmail.getText().isEmpty() || IngresoTelefono.getText().isEmpty()) {
 
-        insertarCliente(nuevoCliente);
-        this.dispose();
+            
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.",
+                    "Error", JOptionPane.WARNING_MESSAGE);
+        } else if (!IngresoEmail.getText().contains("@") || !IngresoEmail.getText().endsWith(".com")) {
+            
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un correo electrónico válido (debe contener '@' y terminar con '.com').",
+                    "Error", JOptionPane.WARNING_MESSAGE);
+        } else {
+            
+            ControladorClientes nuevoCliente = new ControladorClientes();
+            nuevoCliente.setNombre(IngresoNombre.getText());
+            nuevoCliente.setApellido(IngresoApellido.getText());
+            nuevoCliente.setEmail(IngresoEmail.getText());
+            nuevoCliente.setTelefono(IngresoTelefono.getText());
+
+            
+            insertarCliente(nuevoCliente);
+           
+            dashboard.setEnabled(true);
+            this.dispose();
+            
+        }
+
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void IngresoNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IngresoNombreKeyTyped
+        char c = evt.getKeyChar();
+        if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+            evt.consume();
+    }//GEN-LAST:event_IngresoNombreKeyTyped
+
+    private void IngresoApellidoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IngresoApellidoKeyTyped
+        char c = evt.getKeyChar();
+        if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+            evt.consume();
+    }//GEN-LAST:event_IngresoApellidoKeyTyped
+
+    private void IngresoTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_IngresoTelefonoKeyTyped
+        char c = evt.getKeyChar();
+
+        String text = ((javax.swing.JTextField) evt.getSource()).getText();
+
+        if ((c < '0' || c > '9') || text.length() >= 10) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_IngresoTelefonoKeyTyped
 
     /**
      * @param args the command line arguments
      */
-    
-   
     public void insertarCliente(ControladorClientes nuevoCliente) {
         OkHttpClient client = new OkHttpClient();
         Gson gson = new Gson();
-        String enlace = "http://localhost:3000/clientes";
+        String enlace = "http://192.168.137.1:3000/clientes";
 
         String datosJSON = gson.toJson(nuevoCliente);
 
         RequestBody cuerpo = RequestBody.create(datosJSON, JSON);
 
         Request peticion = new Request.Builder().url(enlace).post(cuerpo).build();
-        try ( Response respuesta = client.newCall(peticion).execute()) {
+        try (Response respuesta = client.newCall(peticion).execute()) {
             if (respuesta.isSuccessful()) {
                 System.out.println("Exito al insertar el registro");
                 this.dispose();
@@ -276,6 +335,7 @@ public class AgregarCliente extends javax.swing.JFrame {
             System.out.println(ex.getMessage());
         }
     }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -304,7 +364,7 @@ public class AgregarCliente extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AgregarCliente().setVisible(true);
+
             }
         });
     }

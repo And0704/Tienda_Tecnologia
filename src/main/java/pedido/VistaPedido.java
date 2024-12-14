@@ -2,26 +2,36 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package com.mycompany.tienda_tecnologia;
+package pedido;
 
+import pedido.ControladorPedidos;
+import pedido.ControladorListClientesP;
+import pedido.AgregarPedido;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mycompany.tienda_tecnologia.Dashboard;
+import com.mycompany.tienda_tecnologia.EditarPedido;
 import java.awt.BorderLayout;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
 /**
  *
  * @author Josue
  */
 public class VistaPedido extends javax.swing.JPanel {
+
     MediaType JSON = MediaType.get("application/json");
     ControladorPedidos consulta = null;
+
     /**
      * Creates new form VistaProducto
      */
@@ -29,18 +39,18 @@ public class VistaPedido extends javax.swing.JPanel {
         initComponents();
         mostrarTodo(consultaTodo());
     }
-    
-    public List<ControladorListPedidos> consultaTodo() {
+
+    public List<ControladorListClientesP> consultaTodo() {
         OkHttpClient client = new OkHttpClient();
-        String enlace = "http://localhost:3000/pedido";
+        String enlace = "http://192.168.137.1:3000/detallePedido";
 
         Request peticion = new Request.Builder().url(enlace).build();
 
-        try ( Response respuesta = client.newCall(peticion).execute()) {
+        try (Response respuesta = client.newCall(peticion).execute()) {
             if (respuesta.isSuccessful() && respuesta.body() != null) {
                 String respuestaJSON = respuesta.body().string();
 
-                java.lang.reflect.Type listaElementos = new TypeToken<List<ControladorListPedidos>>() {
+                java.lang.reflect.Type listaElementos = new TypeToken<List<ControladorListClientesP>>() {
                 }.getType();
 
                 return new Gson().fromJson(respuestaJSON, listaElementos);
@@ -51,16 +61,29 @@ public class VistaPedido extends javax.swing.JPanel {
         return null;
     }
 
-    public void mostrarTodo(List<ControladorListPedidos> pedidos) {
-        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"IDPEDIDO", "NOMBRECLIENTE","ESTADO", "NOMBREPRODUCTO","CANTIDAD"}, 1);
-        for (ControladorListPedidos item : pedidos) {
-            modeloTabla.addRow(new Object[]{item.getIdPedido(), item.getNombreCliente(),item.getEstado(), item.getNombreProducto(), item.getCantidad()});
+    public void mostrarTodo(List<ControladorListClientesP> pedidos) {
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"Idliente", "NOMBRE CLIENTE"}, 1) {
+
+            @Override
+            public boolean isCellEditable(int filas, int columnas) {
+                if (columnas == 2) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+        for (ControladorListClientesP item : pedidos) {
+            modeloTabla.addRow(new Object[]{item.getIdCliente(), item.getNombreCliente()});
         }
 
         jTable1.setModel(modeloTabla);
+        jTable1.getColumnModel().getColumn(0).setMinWidth(0);
+        jTable1.getColumnModel().getColumn(0).setMaxWidth(0);
+        jTable1.getColumnModel().getColumn(0).setWidth(0);
 
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -75,32 +98,38 @@ public class VistaPedido extends javax.swing.JPanel {
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 2, 24)); // NOI18N
-        jLabel1.setText("Pedido");
+        jLabel1.setText("Clientes con pedidos");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setBackground(new java.awt.Color(153, 255, 153));
         jButton1.setText("Agregar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(153, 204, 255));
         jButton2.setText("Editar");
-
-        jButton3.setBackground(new java.awt.Color(255, 102, 102));
-        jButton3.setText("Eliminar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -116,10 +145,9 @@ public class VistaPedido extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(48, 48, 48)
                         .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
+                        .addGap(11, 11, 11)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,17 +160,38 @@ public class VistaPedido extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton2))
                 .addGap(57, 57, 57))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int index = jTable1.getSelectedRow();
+        if (index == -1) {
+            // No se seleccionó ninguna fila
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila de la tabla.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        } else {
+            Dashboard dashboard = (Dashboard) SwingUtilities.getWindowAncestor(this);
+            EditarPedido ep1 = new EditarPedido(dashboard);
+            String codigo = jTable1.getValueAt(index, 0).toString();
+            String nombre = jTable1.getValueAt(index, 1).toString();
+            dashboard.setEnabled(false);
+            ep1.setID(codigo, nombre);
+            ep1.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Dashboard dashboard = (Dashboard) SwingUtilities.getWindowAncestor(this); // Suponiendo que 'this' es el componente dentro del JPanel
+        dashboard.setEnabled(false);
+        AgregarPedido ap1 = new AgregarPedido(dashboard);
+        ap1.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

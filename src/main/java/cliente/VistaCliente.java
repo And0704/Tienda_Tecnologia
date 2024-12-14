@@ -42,7 +42,7 @@ public class VistaCliente extends javax.swing.JPanel {
 
     public List<ControladorListClientes> consultaTodo() {
         OkHttpClient client = new OkHttpClient();
-        String enlace = "http://localhost:3000/clientes";
+        String enlace = "http://192.168.137.1:3000/clientes";
 
         Request peticion = new Request.Builder().url(enlace).build();
 
@@ -63,7 +63,18 @@ public class VistaCliente extends javax.swing.JPanel {
 
     public void mostrarTodo(List<ControladorListClientes> clientes) {
         // Crear un modelo de tabla con el id_cliente como columna adicional (oculta)
-        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"ID_CLIENTE", "NOMBRE", "APELLIDO", "EMAIL", "TELEFONO"}, 0);
+        DefaultTableModel modeloTabla = new DefaultTableModel(new Object[]{"ID_CLIENTE", "NOMBRE", "APELLIDO", "EMAIL", "TELEFONO"}, 0){
+        
+            @Override
+            public boolean isCellEditable(int filas, int columnas){
+                if(columnas == 5){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        
+        };
 
         // Llenar el modelo con los datos
         for (ControladorListClientes item : clientes) {
@@ -72,6 +83,7 @@ public class VistaCliente extends javax.swing.JPanel {
 
         // Asignar el modelo a la tabla
         jTable1.setModel(modeloTabla);
+        
 
         // Ocultar la columna del ID (ID_CLIENTE)
         jTable1.getColumnModel().getColumn(0).setMinWidth(0);
@@ -82,7 +94,7 @@ public class VistaCliente extends javax.swing.JPanel {
     public void eliminarCliente(String id) {
         OkHttpClient client = new OkHttpClient();
         Gson gson = new Gson();
-        String enlace = "http://localhost:3000/clientes/" + id;
+        String enlace = "http://192.168.137.1:3000/clientes/" + id;
 
         Request peticion = new Request.Builder().url(enlace).delete().build();
         try (Response respuesta = client.newCall(peticion).execute()) {
@@ -123,13 +135,13 @@ public class VistaCliente extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {},
+                {},
+                {},
+                {}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         jScrollPane1.setViewportView(jTable1);
